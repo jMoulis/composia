@@ -2,9 +2,9 @@ import { getDocument } from '@/lib/mongodb/actions';
 import { matchRoute } from './matchRouter';
 import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
-import Preview from '../admin/builder/Preview';
 import { IPageVersion } from '../admin/builder/interfaces';
 import { SYSTEM_COLLECTIONS } from '@/lib/mongodb/system-collections';
+import { ComponentRenderer } from '../admin/builder/renderer/components/ComponentRenderer';
 
 const slugsSystem = ['.well-known', 'appspecific', 'com.chrome.devtools.json'];
 
@@ -35,11 +35,5 @@ export default async function Page({
     notFound();
   }
 
-  return (
-    <div>
-      <h1>Dynamic Page</h1>
-      <p>This is a dynamic page based on the locale and slug.</p>
-      <Preview page={publishedVersion} />
-    </div>
-  );
+  return <ComponentRenderer node={publishedVersion.snapshot} />;
 }
