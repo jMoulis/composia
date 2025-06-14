@@ -89,88 +89,105 @@ async function executeDatabaseAction(
     return { success: false, error: 'No action specified' };
   }
 
-  switch (action) {
-    case 'create': {
-      if (!resolvedParams.data) {
+  type ActionHandler = (
+    params: Record<string, any>
+  ) => Promise<Record<string, any>>;
+
+  const actionHandlers: Record<
+    'create' | 'update' | 'delete' | 'list' | 'aggregate' | 'get',
+    ActionHandler
+  > = {
+    async create(params) {
+      if (!params.data) {
         console.warn('No data provided for create action');
         return { success: false, error: 'No data provided for create action' };
       }
 
       const response = await createDocument<any>(
         collection,
-        resolvedParams.data,
-        resolvedParams.options || {}
+        params.data,
+        params.options || {}
       );
       return { success: true, ...response };
-    }
-    case 'update': {
-      if (!resolvedParams.data) {
+    },
+    async update(params) {
+      if (!params.data) {
         console.warn('No data provided for create action');
         return { success: false, error: 'No data provided for create action' };
       }
 
-      if (!resolvedParams.filter) {
+      if (!params.filter) {
         console.warn('No filter provided for create action');
         return {
           success: false,
           error: 'No filter provided for create action'
         };
       }
+
       const response = await upsertDocument<any>(
         collection,
-        resolvedParams.filter,
-        resolvedParams.data,
-        resolvedParams.options || {}
+        params.filter,
+        params.data,
+        params.options || {}
       );
       return { success: true, ...response };
-    }
-    case 'delete':
-      if (!resolvedParams.id) {
+    },
+    async delete(params) {
+      if (!params.id) {
         console.warn('No ID provided for delete action');
         return { success: false, error: 'No ID provided for delete action' };
       }
-      await deleteDocument(collection, resolvedParams.id);
+      await deleteDocument(collection, params.id);
       return { success: true, message: 'Document deleted successfully' };
-    case 'list': {
+    },
+    async list(params) {
       const documents = await getAllDocuments<any>(
         collection,
-        resolvedParams.filter || {}
+        params.filter || {}
       );
       return {
         success: true,
         data: documents || []
       };
-    }
-    case 'aggregate': {
-      if (!resolvedParams.pipeline || !Array.isArray(resolvedParams.pipeline)) {
+    },
+    async aggregate(params) {
+      if (!params.pipeline || !Array.isArray(params.pipeline)) {
         console.warn('No valid pipeline provided for aggregate action');
         return {
           success: false,
           error: 'No valid pipeline provided for aggregate action'
         };
       }
+
       const response = await aggregateDocuments(
         collection,
-        resolvedParams.pipeline,
-        resolvedParams.options || {}
+        params.pipeline,
+        params.options || {}
       );
       return { success: true, ...response };
-    }
-    case 'get': {
-      if (!resolvedParams.filter) {
+    },
+    async get(params) {
+      if (!params.filter) {
         console.warn('No ID provided for get action');
         return { success: false, error: 'No ID provided for get action' };
       }
-      const response = await getDocument(collection, resolvedParams.filter);
+
+      const response = await getDocument(collection, params.filter);
       return {
         success: true,
         data: response || null
       };
     }
-    default:
-      return {
-        success: false,
-        error: `Unsupported action: ${action}`
-      };
+  };
+
+  const handler = actionHandlers[action];
+
+  if (!handler) {
+    return {
+      success: false,
+      error: `Unsupported action: ${action}`
+    };
   }
+
+  return handler(resolvedParams);
 }
