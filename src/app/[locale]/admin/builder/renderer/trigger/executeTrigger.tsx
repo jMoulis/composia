@@ -29,35 +29,35 @@ export async function executeTrigger(
       return window.location.assign(target!); // à adapter si router
     case 'showToast': {
       console.log('showToast', resolvedParams);
-      switch (resolvedParams.variant) {
-        case 'error':
-          toast.error(
-            resolvedParams.message ||
-              'An error occurred while processing your request'
-          );
-          return;
-        case 'warning':
-          toast.warning(
-            resolvedParams.message || 'Warning: Please check your input'
-          );
-          return;
-        case 'info':
-          toast.info(
-            resolvedParams.message || 'Information: Please note the following'
-          );
-          return;
-        case 'success':
-          if (!resolvedParams.message) {
-            console.warn('No message provided for success toast');
-            return;
-          }
-          toast.success(
-            resolvedParams.message || 'Action completed successfully'
-          );
-          return;
-        default:
-          return toast('An unexpected error occurred. Please try again later.');
+
+      const toastMap: Record<string, (msg: string) => void> = {
+        error: toast.error,
+        warning: toast.warning,
+        info: toast.info,
+        success: toast.success
+      };
+
+      const defaultMessages: Record<string, string> = {
+        error: 'An error occurred while processing your request',
+        warning: 'Warning: Please check your input',
+        info: 'Information: Please note the following',
+        success: 'Action completed successfully'
+      };
+
+      if (resolvedParams.variant === 'success' && !resolvedParams.message) {
+        console.warn('No message provided for success toast');
+        return;
       }
+
+      const showToast =
+        toastMap[resolvedParams.variant as string] ?? toast;
+      const message =
+        resolvedParams.message ||
+        defaultMessages[resolvedParams.variant as string] ||
+        'An unexpected error occurred. Please try again later.';
+
+      showToast(message);
+      return;
     }
     default:
       console.warn('Unhandled trigger type:', type);
