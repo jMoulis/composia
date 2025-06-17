@@ -1,3 +1,5 @@
+'use client';
+
 import { Input } from '@/components/ui/input';
 import { IComponentRegistryProps } from '../../interfaces';
 import { useFormContext } from 'react-hook-form';
@@ -15,7 +17,7 @@ export function InputRenderer({
 }: IComponentRegistryProps) {
   const { props, fieldKey } = useComponentContext({ node, provides });
   const { control } = useFormContext();
-  const name = props.name || fieldKey;
+  const name = fieldKey;
 
   if (!name) return <div>❌ Input missing name</div>;
 

@@ -49,7 +49,17 @@ export async function aggregateDocuments<T>(
 ): Promise<T[]> {
   try {
     const db = await getDb();
-    const documents = await db.collection(collection).aggregate(pipeline, options).toArray();
+    const matchedPipeline = pipeline.map(stage => {
+      if (stage.$match && stage.$match._id && typeof stage.$match._id === 'string') {
+        // Convert string _id to ObjectId
+        stage.$match._id = ObjectId.createFromHexString(stage.$match._id);
+      } else if (stage.$match && stage.$match._id && stage.$match._id instanceof ObjectId) {
+        // Ensure _id is an ObjectId
+        stage.$match._id = stage.$match._id;
+      }
+      return stage;
+    });
+    const documents = await db.collection(collection).aggregate(matchedPipeline, options).toArray();
     const serializedDocuments = superjson.stringify(documents);
     return JSON.parse(serializedDocuments)?.json as T[];
   } catch (error) {

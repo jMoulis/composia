@@ -1,7 +1,7 @@
 /** Credits to my best friend Chatty */
 
 import { getAllDocuments } from "@/lib/mongodb/actions";
-import { IPage } from "../admin/builder/interfaces";
+import { IPage } from "../admin/engine/interfaces";
 import { SYSTEM_COLLECTIONS } from "@/lib/mongodb/system-collections";
 
 interface RouteNode {

@@ -14,7 +14,19 @@ const eslintConfig = [
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-console': [
+        'warn',
+        {
+          allow: [
+            'warn',
+            'error',
+            'info',
+            'group',
+            'groupEnd',
+            'groupCollapsed'
+          ]
+        }
+      ],
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
