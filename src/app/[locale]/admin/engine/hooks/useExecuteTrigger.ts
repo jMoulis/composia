@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { IComponentNode } from "../interfaces";
-import { useStoresContext } from "@/app/[locale]/[...slug]/components/StoreContext";
+import { useStoresContext } from "@/app/[locale]/[...slug]/stores/StoreContext";
 import { toast } from "sonner";
 import { CustomExecutionError } from "../renderer/trigger/CustomExecutionError";
 import { executeTrigger } from "../renderer/trigger/executeAtomicTrigger";

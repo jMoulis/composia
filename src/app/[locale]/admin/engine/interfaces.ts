@@ -57,6 +57,7 @@ export interface IComponentData {
     key: string; // clé du formulaire
     fieldKey?: string; // clé du champ à afficher
   }
+  shouldResolvedSSR?: boolean; // si les données doivent être résolues côté serveur
   store?: IStoreData; // données liées à un store
   query?: IQueryDefinition;
   api?: {

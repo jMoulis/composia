@@ -5,7 +5,7 @@ import { IPageVersion } from "../admin/engine/interfaces";
 import { SYSTEM_COLLECTIONS } from "@/lib/mongodb/system-collections";
 import { ObjectId } from "mongodb";
 import { resolvedNode, resolveStores } from "./runtimeResolvers";
-import { fakePage } from './fakePage';
+import { testPage } from './testPage';
 
 export async function loadPage(slug: string[], fake = false) {
   const slugsSystem = ['.well-known', 'appspecific', 'com.chrome.devtools.json'];
@@ -26,7 +26,7 @@ export async function loadPage(slug: string[], fake = false) {
   let publishedVersion: IPageVersion | null = null;
   if (fake) {
     // Use a fake page version for testing purposes
-    publishedVersion = fakePage;
+    publishedVersion = testPage;
   } else {
 
     publishedVersion = await getDocument<IPageVersion>(

@@ -4,7 +4,7 @@ import React from 'react';
 import { IComponentNode } from '../../interfaces';
 import { componentRuntimeMap } from './componentRuntimeMap';
 import { buildBindings, resolveBindings } from '../trigger/interpolateParams';
-import { useStoresContext } from '@/app/[locale]/[...slug]/components/StoreContext';
+import { useStoresContext } from '@/app/[locale]/[...slug]/stores/StoreContext';
 
 interface ComponentRendererProps {
   node: IComponentNode;

@@ -9,7 +9,8 @@ export async function resolveDataSource(
   node: IComponentNode,
   context: Record<string, any> = {}
 ): Promise<any> {
-  if (!node.data?.source) return undefined;
+  if (!node.data?.source || !node.data.shouldResolvedSSR) return undefined;
+
   const data = node.data as IComponentData;
   switch (data.source) {
     case 'store': {

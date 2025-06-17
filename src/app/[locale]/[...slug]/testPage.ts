@@ -1,6 +1,6 @@
 import { IPageVersion } from "../admin/engine/interfaces";
 
-export const fakePage: IPageVersion = {
+export const testPage: IPageVersion = {
   "_id": "684d9279832dfa32ec43fdb2",
   "stores": [
     {
@@ -292,6 +292,7 @@ export const fakePage: IPageVersion = {
         },
         "data": {
           "source": "store",
+          "shouldResolvedSSR": false,
           "store": {
             "key": "youths"
           }

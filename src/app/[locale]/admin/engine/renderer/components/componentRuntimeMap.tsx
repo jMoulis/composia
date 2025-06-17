@@ -7,6 +7,7 @@ import { DateRenderer } from './DateRenderer';
 import { ListRenderer } from './ListRenderer';
 import { DialogRenderer } from './DialogRenderer';
 import { ButtonFormRenderer } from './ButtonFormRenderer';
+import { SelectRenderer } from './SelectRenderer';
 
 export const componentRuntimeMap: Record<string, React.ComponentType<any>> = {
   form: FormRenderer,
@@ -17,5 +18,6 @@ export const componentRuntimeMap: Record<string, React.ComponentType<any>> = {
   date: DateRenderer,
   list: ListRenderer,
   dialog: DialogRenderer,
-  'button-form': ButtonFormRenderer
+  'button-form': ButtonFormRenderer,
+  select: SelectRenderer
 };

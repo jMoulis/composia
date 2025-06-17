@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { IComponentNode, IResourceDefinition } from "../interfaces";
-import { useStoresContext } from "@/app/[locale]/[...slug]/components/StoreContext";
+import { useStoresContext } from "@/app/[locale]/[...slug]/stores/StoreContext";
 import { interpolateParams } from "../renderer/trigger/interpolateParams";
 
 type UseComponentContextOptions = {

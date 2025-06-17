@@ -1,5 +1,5 @@
 import { ComponentRenderer } from '../admin/engine/renderer/components/ComponentRenderer';
-import { StoreProvider } from './components/StoreContext';
+import { StoreProvider } from './stores/StoreContext';
 import { loadPage } from './loadPage';
 
 export default async function Page({
