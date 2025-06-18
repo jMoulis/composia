@@ -9,7 +9,7 @@ type UseComponentContextOptions = {
 };
 
 export function useComponentContext({ node, provides = {} }: UseComponentContextOptions) {
-  const fieldKey = useMemo(() => node.props?.name as string | undefined, [node.props?.name]);
+  const fieldName = useMemo(() => node.props?.name as string | undefined, [node.props?.name]);
   const stores = useStoresContext((state) => state.stores);
   const storeKey = useMemo(() => node.data?.store?.key || '', [node.data?.store?.key]);
   const storeData = useMemo(() => stores[storeKey]?.data || null, [stores, storeKey]);
@@ -19,18 +19,19 @@ export function useComponentContext({ node, provides = {} }: UseComponentContext
 
   const mergedProps = useMemo(() => {
     const resource = provides?.resourceDefinition as IResourceDefinition | undefined;
-    const fieldDefinition = fieldKey ? resource?.fields?.[fieldKey] : undefined;
+    const fieldDefinition = fieldName ? resource?.fields?.[fieldName] : undefined;
     return {
       ...(fieldDefinition?.props || {}),
       ...(node.props || {})
     };
-  }, [fieldKey, node.props, provides?.resourceDefinition]);
+  }, [fieldName, node.props, provides?.resourceDefinition]);
 
   return {
     props: interpolateParams(mergedProps, provides, stores),
-    fieldKey,
+    fieldName,
     resourceDefinition,
     data,
+    name: node.props?.name,
     params: interpolateParams(node.params || {}, provides, stores), // paramètres passés au
   };
 }

@@ -3,6 +3,7 @@
 import { IComponentRegistryProps } from '../../interfaces';
 import { ComponentRenderer } from './ComponentRenderer';
 import { useComponentContext } from '../../hooks/useComponentContext';
+import WrongConfig from './WrongConfig';
 
 export function ListRenderer({
   node,
@@ -15,9 +16,10 @@ export function ListRenderer({
 
   if (!Array.isArray(data)) {
     return (
-      <div className='text-red-500'>
-        Donnée non itérable à l&apos;emplacement
-      </div>
+      <WrongConfig
+        message='❌ ListRenderer requires data to be an array'
+        type={node.type}
+      />
     );
   }
   return (

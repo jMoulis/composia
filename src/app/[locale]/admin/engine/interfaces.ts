@@ -32,6 +32,7 @@ export interface IComponentNode {
   key: string; // identifiant unique dans l’arbre
   type: string; // ex: "form", "table", "input", "block", "tabs", "modal", etc.
 
+  isFormContext?: boolean; // si le composant est dans un contexte de formulaire
   data?: IComponentData; // logique de ressource liée (optionnelle)
   props?: Record<string, any>; // options visuelles ou comportementales
   events?: Record<string, ITrigger | ITrigger[]>; // ex: onClick, onSubmit, onRowClick

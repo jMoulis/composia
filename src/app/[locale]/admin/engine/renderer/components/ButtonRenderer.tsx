@@ -14,19 +14,12 @@ export function ButtonRenderer({
 }: IComponentRegistryProps) {
   const { props, params } = useComponentContext({ node, provides });
   const { execute, loading } = useExecuteTrigger({ node });
-  let formState: any = {};
-
-  try {
-    const formContext = useFormContext();
-    formState = formContext.formState;
-  } catch {
-    // Pas dans un FormProvider : on ignore isSubmitting
-  }
+  const formContext = useFormContext();
 
   return (
     <Button
       {...props}
-      disabled={loading || formState.isSubmitting}
+      disabled={loading || formContext?.formState.isSubmitting}
       onClick={() => execute('onClick', provides)}>
       {node.children?.length
         ? node.children?.map((child) => (

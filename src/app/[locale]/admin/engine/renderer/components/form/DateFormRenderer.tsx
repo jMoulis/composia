@@ -11,6 +11,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage
 } from '@/components/ui/form';
 import {
@@ -18,23 +19,35 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { IComponentRegistryProps } from '../../interfaces';
-import { useComponentContext } from '../../hooks/useComponentContext';
+import { IComponentRegistryProps } from '../../../interfaces';
+import { useComponentContext } from '../../../hooks/useComponentContext';
 import { fr } from 'date-fns/locale';
+import useExecuteTrigger from '../../../hooks/useExecuteTrigger';
+import WrongConfig from '../WrongConfig';
 
 export function DateRenderer({ node, provides }: IComponentRegistryProps) {
-  const { props, fieldKey } = useComponentContext({ node, provides });
+  const { props, fieldName, params } = useComponentContext({ node, provides });
+  const { control, setValue } = useFormContext();
+  const { execute } = useExecuteTrigger({ node });
 
-  const { control } = useFormContext();
-  const name = props.name || fieldKey;
+  const handleValueChange = (value: any) => {
+    if (!fieldName) return;
+    setValue(fieldName, value);
+    if (node.events?.onChange) {
+      execute('onChange', { ...provides, [fieldName]: value });
+    }
+  };
 
-  if (!name) return <div>❌ Input missing name</div>;
+  if (!fieldName)
+    return <WrongConfig message='❌ Date missing fieldName' type={node.type} />;
+
   return (
     <FormField
       control={control}
-      name={name}
+      name={fieldName}
       render={({ field }) => (
         <FormItem className='flex flex-col'>
+          {params.label ? <FormLabel>{params.label}</FormLabel> : null}
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -60,7 +73,7 @@ export function DateRenderer({ node, provides }: IComponentRegistryProps) {
                 mode='single'
                 locale={fr}
                 selected={field.value}
-                onSelect={field.onChange}
+                onSelect={handleValueChange}
                 disabled={(date) =>
                   date > new Date() || date < new Date('1900-01-01')
                 }
@@ -68,9 +81,7 @@ export function DateRenderer({ node, provides }: IComponentRegistryProps) {
               />
             </PopoverContent>
           </Popover>
-          <FormDescription>
-            {props.description || 'Sélectionnez une date au format JJ/MM/AAAA'}
-          </FormDescription>
+          <FormDescription>{props.description || ''}</FormDescription>
           <FormMessage />
         </FormItem>
       )}

@@ -20,7 +20,7 @@ export const testPage: IPageVersion = {
         "key": "test-api-button",
         "type": "button",
         "params": {
-          "label": "Test API Call"
+          "label": "Test API Call",
         },
         "props": {
           "className": "bg-blue-500 text-white hover:bg-blue-600"
@@ -284,100 +284,249 @@ export const testPage: IPageVersion = {
         }
       },
       {
-        "type": "select",
-        "key": "select-theme",
-        "params": {
-          "placeholder": "Thème",
-        },
-        "props": {
-          "className": "w-full"
-        },
+        "type": "form",
+        "key": "form-test",
         "events": {
-          "onChange": [
+          "onSubmit": [
             {
               "type": "showToast",
               "params": {
-                "variant": "info",
-                "message": "Thème sélectionné : {{value}}"
+                "variant": "success",
+                "message": "{{values}}"
               }
+            }
+          ]
+        },
+        "children": [
+          {
+            "type": "select",
+            "key": "select-theme",
+            "params": {
+              "label": "Sélectionnez un thème",
             },
-            {
-              "type": "executeDatabaseAction",
-              "params": {
-                "query": {
-                  "action": "list",
-                  "collection": "sub-themes",
-                  "filter": {
-                    "parent": "{{value}}"
+            "props": {
+              "className": "w-full",
+              "placeholder": "Thème",
+              "name": "select-theme"
+            },
+            "events": {
+              "onChange": [
+                {
+                  "type": "showToast",
+                  "params": {
+                    "variant": "info",
+                    "message": "Thème sélectionné : {{select-theme}}"
+                  }
+                },
+                {
+                  "type": "executeDatabaseAction",
+                  "params": {
+                    "query": {
+                      "action": "list",
+                      "collection": "sub-themes",
+                      "filter": {
+                        "parent": "{{select-theme}}"
+                      },
+                    }
                   },
+                  "outputKey": "select-theme-query"
+                },
+                {
+                  "type": "updateStore",
+                  "params": {
+                    "action": "set",
+                    "storeName": "select-theme-query",
+                    "data": "{{results.select-theme-query.data}}",
+                    "dataType": "array"
+                  }
+                },
+                {
+                  "type": "log",
+                  "params": {
+                    "message": "Thème sélectionné",
+                    "data": "{{results.select-theme-query.data}}",
+                    "value": "{{value}}"
+                  }
                 }
-              },
-              "outputKey": "select-theme-query",
-              // "outputTransform": {
-              //   "data": "{{data}}"
-              // }
+              ]
             },
-            {
-              "type": "updateStore",
-              "params": {
-                "action": "set",
-                "storeName": "select-theme-query",
-                "data": "{{results.select-theme-query.data}}",
-                "dataType": "array"
-              }
+            "data": {
+              "shouldResolvedSSR": true,
+              "source": "static",
+              "staticData": [{
+                "label": "Light",
+                "value": "light"
+              }, {
+                "label": "Dark",
+                "value": "dark"
+              }, {
+                "label": "System",
+                "value": "system"
+              }]
+            }
+          },
+          {
+            "type": "select",
+            "key": "select-theme-query",
+            "params": {
+              "label": "Sélectionnez un sous-thème"
             },
-            {
-              "type": "log",
-              "params": {
-                "message": "Thème sélectionné",
-                "data": "{{results.select-theme-query.data}}",
-                "value": "{{value}}"
+            "props": {
+              "name": "select-theme-query",
+              "className": "w-full",
+              "placeholder": "Sous-thème",
+            },
+            "events": {
+              "onChange": [
+                {
+                  "type": "showToast",
+                  "params": {
+                    "variant": "info",
+                    "message": "Thème sélectionné : {{select-theme-query}}"
+                  }
+                }
+              ]
+            },
+            "data": {
+              "source": "store",
+              "store": {
+                "key": "select-theme-query"
               }
             }
-          ]
-        },
-        "data": {
-          "shouldResolvedSSR": true,
-          "source": "static",
-          "staticData": [{
-            "label": "Light",
-            "value": "light"
-          }, {
-            "label": "Dark",
-            "value": "dark"
-          }, {
-            "label": "System",
-            "value": "system"
-          }]
-        }
-      },
-      {
-        "type": "select",
-        "key": "select-theme-query",
-        "params": {
-          "placeholder": "Sous-thème",
-        },
-        "props": {
-          "className": "w-full"
-        },
-        "events": {
-          "onChange": [
-            {
-              "type": "showToast",
-              "params": {
-                "variant": "info",
-                "message": "Thème sélectionné : {{value}}"
-              }
+          },
+          {
+            "key": "input-firstname",
+            "type": "input",
+            "props": {
+              "name": "firstname",
+              "placeholder": "Prénom",
+              "className": "w-full"
+            },
+            "params": {
+              "label": "Prénom"
             }
-          ]
-        },
-        "data": {
-          "source": "store",
-          "store": {
-            "key": "select-theme-query"
+          },
+          {
+            "key": "input-lastname",
+            "type": "input",
+            "props": {
+              "name": "lastname",
+              "placeholder": "Nom",
+              "className": "w-full"
+            },
+            "params": {
+              "label": "Nom"
+            }
+          },
+          {
+            "key": "admin",
+            "type": "checkbox",
+            "props": {
+              "name": "admin",
+              "className": "flex-row"
+            },
+            "params": {
+              "label": "Is admin"
+            }
+          },
+          {
+            "key": "date-input",
+            "type": "date",
+            "props": {
+              "name": "dateOfBirth",
+            },
+            "params": {
+              "label": "Date de naissance"
+            }
+          },
+          {
+            "key": "radio-group",
+            "type": "radio",
+            "props": {
+              "name": "gender",
+            },
+            "params": {
+              "label": "Genre"
+            },
+            "data": {
+              "source": "static",
+              "staticData": [
+                { "label": "Homme", "value": "male" },
+                { "label": "Femme", "value": "female" },
+                { "label": "Autre", "value": "other" }
+              ]
+            }
+          },
+          {
+            "key": "textarea-notes",
+            "type": "textarea",
+            "props": {
+              "name": "notes",
+              "placeholder": "Notes",
+              "className": "w-full"
+            },
+            "params": {
+              "label": "Notes"
+            }
+          },
+          {
+            "key": "switch",
+            "type": "switch",
+            "props": {
+              "name": "present"
+            },
+            "params": {
+              "label": "Présence"
+            }
+          },
+          {
+            "key": "slider",
+            "type": "slider",
+            "props": {
+              "name": "sliderValue",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "defaultValue": 50,
+            },
+            "params": {
+              "label": "Présence"
+            }
+          },
+          {
+            "key": "select-multi",
+            "type": "multi-checkbox",
+            "props": {
+              "name": "interests",
+            },
+            "params": {
+              "label": "Centres d'intérêt"
+            },
+            "data": {
+              "source": "static",
+              "staticData": [
+                { "label": "Sport", "value": "sport" },
+                { "label": "Musique", "value": "music" },
+                { "label": "Art", "value": "art" },
+                { "label": "Technologie", "value": "technology" },
+                { "label": "Voyage", "value": "travel" }
+              ]
+            }
+          },
+          {
+            "key": "submit-btn",
+            "type": "button",
+            "props": {
+              "type": "submit",
+              "className": "bg-green-500 text-white hover:bg-green-600"
+            },
+            "params": {
+              "label": "Submit Form"
+            }
           }
-        }
+        ]
       },
+
       {
         "key": "list-youths",
         "type": "list",

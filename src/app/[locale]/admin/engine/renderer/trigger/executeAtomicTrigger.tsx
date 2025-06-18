@@ -98,7 +98,10 @@ export async function executeAtomicTrigger(
         };
 
         const showToast = toastMap[resolvedParams.variant] ?? toast;
-        const message = resolvedParams.message ?? 'Notification';
+        const message =
+          typeof resolvedParams.message !== 'string'
+            ? JSON.stringify(resolvedParams)
+            : resolvedParams.message ?? 'Notification';
         showToast(message);
         break;
       }

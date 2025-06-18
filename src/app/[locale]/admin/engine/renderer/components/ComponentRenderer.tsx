@@ -21,7 +21,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   const stores = useStoresContext((state) => state.stores);
   if (!Comp) {
     console.error(`Component runtime not found for type: ${node.type}`);
-    return <div>Error: Component runtime not found</div>;
+    return <div>Component runtime not found for type: {node.type}</div>;
   }
 
   const bindings = buildBindings(node, contextBindings);
