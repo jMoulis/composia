@@ -9,13 +9,11 @@ export function ListRenderer({
   provides = {},
   bindings = {}
 }: IComponentRegistryProps) {
-  const { props, storeData } = useComponentContext({ node, provides });
-
-  const list = storeData || [];
+  const { props, data } = useComponentContext({ node, provides });
 
   const indexAlias = props.indexAlias || 'index';
 
-  if (!Array.isArray(list)) {
+  if (!Array.isArray(data)) {
     return (
       <div className='text-red-500'>
         Donnée non itérable à l&apos;emplacement
@@ -24,7 +22,7 @@ export function ListRenderer({
   }
   return (
     <div className='space-y-2'>
-      {list.map((item, index) => {
+      {data.map((item, index) => {
         const iterationProvides = {
           ...provides,
           [indexAlias]: index

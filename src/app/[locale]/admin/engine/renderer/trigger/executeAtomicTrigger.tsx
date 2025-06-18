@@ -13,7 +13,18 @@ import { createDebugService } from './createDebugService';
 
 export async function executeTrigger(
   trigger: ITrigger | ITrigger[],
-  provides: Record<string, any> = {},
+  provides: {
+    [key: string]: {
+      [key: string]: any;
+      updateStore?: (
+        storeKey: string,
+        values: any,
+        action: 'set' | 'add' | 'update' | 'delete',
+        dataType: 'array' | 'object' | 'primitive',
+        index?: number
+      ) => void;
+    };
+  } = {},
   results: Record<string, any> = {}
 ): Promise<Record<string, any>> {
   const triggerList = Array.isArray(trigger) ? trigger : [trigger];
@@ -104,16 +115,18 @@ export async function executeAtomicTrigger(
         await updateStore(
           resolvedParams.storeName,
           resolvedParams.data,
-          resolvedParams.index,
-          resolvedParams.action
+          resolvedParams.action,
+          resolvedParams.dataType,
+          resolvedParams.index
         );
         break;
       }
 
       case 'log': {
         console.group('Log Trigger');
-        console.info('Message', resolvedParams.message);
-        console.info('Data', resolvedParams.data);
+        Object.entries(resolvedParams).forEach(([key, value]) => {
+          console.info(`${key}:`, value);
+        });
         console.groupEnd();
         break;
       }

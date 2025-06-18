@@ -8,43 +8,95 @@ import {
   IStoreDefinition
 } from '../../admin/engine/interfaces';
 
-const updateStore = (
+type DataType = 'object' | 'array' | 'primitive';
+type CrudAction = 'set' | 'update' | 'add' | 'delete';
+
+export const updateStore = (
   currentStore: IStoreDefinition,
   values: any,
-  index?: number,
-  action = 'update'
-) => {
-  if (typeof index === 'number' && Array.isArray(currentStore.data)) {
-    if (action === 'delete') {
-      return {
-        ...currentStore,
-        data: currentStore.data.filter((_, idx) => idx !== index)
-      };
+  action: CrudAction = 'update',
+  dataType: DataType = 'object',
+  index?: number
+): IStoreDefinition => {
+  const currentData = currentStore.data;
+
+  if (dataType === 'array') {
+    const arrayData = Array.isArray(currentData) ? currentData : [];
+
+    switch (action) {
+      case 'add':
+        return {
+          ...currentStore,
+          data: [...arrayData, values]
+        };
+
+      case 'delete':
+        if (typeof index !== 'number') return currentStore;
+        return {
+          ...currentStore,
+          data: arrayData.filter((_, i) => i !== index)
+        };
+
+      case 'update':
+        if (typeof index !== 'number') return currentStore;
+        return {
+          ...currentStore,
+          data: arrayData.map((item, i) =>
+            i === index
+              ? typeof item === 'object' && typeof values === 'object'
+                ? { ...item, ...values }
+                : values
+              : item
+          )
+        };
+
+      case 'set':
+        return {
+          ...currentStore,
+          data: values
+        };
     }
-    if (action === 'add') {
-      return {
-        ...currentStore,
-        data: [...currentStore.data, values]
-      };
+  }
+
+  if (dataType === 'object') {
+    switch (action) {
+      case 'set':
+        return {
+          ...currentStore,
+          data: values
+        };
+      case 'update':
+        return {
+          ...currentStore,
+          data: {
+            ...currentData,
+            ...values
+          }
+        };
+      case 'delete':
+        return {
+          ...currentStore,
+          data: null
+        };
     }
-    const updatedData = currentStore.data.map((item, idx) =>
-      idx === index ? { ...item, ...values } : item
-    );
-    return {
-      ...currentStore,
-      data: updatedData
-    };
   }
-  if (action === 'delete') {
-    return {
-      ...currentStore,
-      data: null
-    };
+
+  if (dataType === 'primitive') {
+    switch (action) {
+      case 'set':
+        return {
+          ...currentStore,
+          data: values
+        };
+      case 'delete':
+        return {
+          ...currentStore,
+          data: null
+        };
+    }
   }
-  return {
-    ...currentStore,
-    data: { ...currentStore.data, ...values }
-  };
+
+  return currentStore;
 };
 type StoreProviderProps = React.PropsWithChildren<StoreProps>;
 
@@ -59,8 +111,9 @@ interface StoreState extends StoreProps {
   updateStore: (
     storeKey: string,
     values: any,
-    index?: number,
-    action?: 'add' | 'update' | 'delete'
+    action: CrudAction,
+    dataType: DataType,
+    index?: number
   ) => void;
   addToStore: (storeKey: string, values: any) => void;
 }
@@ -87,14 +140,20 @@ const createStoresStore = (initProps?: Partial<StoreProps>) => {
         };
       });
     },
-    updateStore: (storeKey, values, index, action) => {
+    updateStore: (storeKey, values, action, dataType, index) => {
       set((state) => {
         const initialStore = state.stores[storeKey] || { data: {}, storeKey };
 
         return {
           stores: {
             ...state.stores,
-            [storeKey]: updateStore(initialStore, values, index, action)
+            [storeKey]: updateStore(
+              initialStore,
+              values,
+              action,
+              dataType,
+              index
+            )
           }
         };
       });

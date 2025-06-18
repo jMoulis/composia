@@ -284,6 +284,101 @@ export const testPage: IPageVersion = {
         }
       },
       {
+        "type": "select",
+        "key": "select-theme",
+        "params": {
+          "placeholder": "Thème",
+        },
+        "props": {
+          "className": "w-full"
+        },
+        "events": {
+          "onChange": [
+            {
+              "type": "showToast",
+              "params": {
+                "variant": "info",
+                "message": "Thème sélectionné : {{value}}"
+              }
+            },
+            {
+              "type": "executeDatabaseAction",
+              "params": {
+                "query": {
+                  "action": "list",
+                  "collection": "sub-themes",
+                  "filter": {
+                    "parent": "{{value}}"
+                  },
+                }
+              },
+              "outputKey": "select-theme-query",
+              // "outputTransform": {
+              //   "data": "{{data}}"
+              // }
+            },
+            {
+              "type": "updateStore",
+              "params": {
+                "action": "set",
+                "storeName": "select-theme-query",
+                "data": "{{results.select-theme-query.data}}",
+                "dataType": "array"
+              }
+            },
+            {
+              "type": "log",
+              "params": {
+                "message": "Thème sélectionné",
+                "data": "{{results.select-theme-query.data}}",
+                "value": "{{value}}"
+              }
+            }
+          ]
+        },
+        "data": {
+          "shouldResolvedSSR": true,
+          "source": "static",
+          "staticData": [{
+            "label": "Light",
+            "value": "light"
+          }, {
+            "label": "Dark",
+            "value": "dark"
+          }, {
+            "label": "System",
+            "value": "system"
+          }]
+        }
+      },
+      {
+        "type": "select",
+        "key": "select-theme-query",
+        "params": {
+          "placeholder": "Sous-thème",
+        },
+        "props": {
+          "className": "w-full"
+        },
+        "events": {
+          "onChange": [
+            {
+              "type": "showToast",
+              "params": {
+                "variant": "info",
+                "message": "Thème sélectionné : {{value}}"
+              }
+            }
+          ]
+        },
+        "data": {
+          "source": "store",
+          "store": {
+            "key": "select-theme-query"
+          }
+        }
+      },
+      {
         "key": "list-youths",
         "type": "list",
         "props": {
@@ -462,11 +557,9 @@ export const testPage: IPageVersion = {
                                 },
                                 {
                                   "type": "updateStore",
-                                  "outputKey": "updateStore",
-                                  "outputTransform": {
-                                    "test": "message"
-                                  },
                                   "params": {
+                                    "action": "update",
+                                    "dataType": "array",
                                     "storeName": "youths",
                                     "index": "{{youthListIndex}}",
                                     "data": "{{values}}"
@@ -535,7 +628,7 @@ export const testPage: IPageVersion = {
                       },
                       {
                         "key": "submit-btn",
-                        "type": "button-form",
+                        "type": "button",
                         "props": {
                           "type": "submit"
                         },

@@ -5,6 +5,7 @@ import { IComponentRegistryProps } from '../../interfaces';
 import { ComponentRenderer } from './ComponentRenderer';
 import { useComponentContext } from '../../hooks/useComponentContext';
 import useExecuteTrigger from '../../hooks/useExecuteTrigger';
+import { useFormContext } from 'react-hook-form';
 
 export function ButtonRenderer({
   node,
@@ -13,23 +14,22 @@ export function ButtonRenderer({
 }: IComponentRegistryProps) {
   const { props, params } = useComponentContext({ node, provides });
   const { execute, loading } = useExecuteTrigger({ node });
-  const { label } = params;
+  let formState: any = {};
+
+  try {
+    const formContext = useFormContext();
+    formState = formContext.formState;
+  } catch {
+    // Pas dans un FormProvider : on ignore isSubmitting
+  }
+
   return (
     <Button
       {...props}
-      disabled={loading}
-      onClick={() =>
-        execute('onClick', {
-          ...provides,
-          values: {
-            _id: '234',
-            firstname: 'John',
-            lastname: 'Doe'
-          }
-        })
-      }>
+      disabled={loading || formState.isSubmitting}
+      onClick={() => execute('onClick', provides)}>
       {node.children?.length
-        ? node.children.map((child) => (
+        ? node.children?.map((child) => (
             <ComponentRenderer
               key={child.key}
               node={child}
@@ -37,7 +37,7 @@ export function ButtonRenderer({
               contextProvides={provides}
             />
           ))
-        : label}
+        : params.label}
     </Button>
   );
 }

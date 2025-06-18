@@ -12,6 +12,7 @@ export async function resolveDataSource(
   if (!node.data?.source || !node.data.shouldResolvedSSR) return undefined;
 
   const data = node.data as IComponentData;
+
   switch (data.source) {
     case 'store': {
       const key = data.store?.key;
@@ -30,7 +31,7 @@ export async function resolveDataSource(
     }
 
     case 'static': {
-      return data.static;
+      return data.staticData;
     }
 
     case 'api': {
@@ -187,7 +188,7 @@ export const resolvedNode = async (
     children,
     data: {
       ...node.data,
-      resolvedData: response?.data || node.data?.resolvedData
+      resolvedData: response || node.data?.resolvedData
     }
   };
 };

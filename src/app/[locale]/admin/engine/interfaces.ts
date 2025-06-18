@@ -49,7 +49,6 @@ export interface IStoreData {
   key: string;
   resourceId?: string; // identifiant de la ressource liée
   fieldKey?: string; // clé du champ à afficher
-  listStoreKey?: string; // clé pour mettre à jour le store
 }
 export interface IComponentData {
   source?: 'store' | 'query' | 'static' | 'api' | 'session' | 'params' | 'computed' | 'form';
@@ -73,7 +72,7 @@ export interface IComponentData {
     key: string; // clé de paramètre d’URL
   }
   computed?: string; // expression ou fonction de calcul
-  static?: any; // valeur statique à afficher
+  staticData?: Array<{ label: string, value?: any }>; // valeur statique à afficher
   resolvedData?: Record<string, any>; // données résolues après interpolation
 }
 
