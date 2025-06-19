@@ -34,7 +34,7 @@ export interface IComponentNode {
 
   isFormContext?: boolean; // si le composant est dans un contexte de formulaire
   data?: IComponentData; // logique de ressource liée (optionnelle)
-  props?: Record<string, any>; // options visuelles ou comportementales
+  props?: Record<string, any>; // react component valid native dom element props
   events?: Record<string, ITrigger | ITrigger[]>; // ex: onClick, onSubmit, onRowClick
 
   params?: Record<string, any>; // paramètres passés au composant

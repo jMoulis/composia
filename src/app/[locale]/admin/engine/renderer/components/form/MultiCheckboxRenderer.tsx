@@ -22,7 +22,7 @@ export function MultiCheckboxRenderer({
   provides = {}
 }: IComponentRegistryProps) {
   const { control, setValue } = useFormContext();
-  const { fieldName, params, data } = useComponentContext({
+  const { fieldKey, params, data } = useComponentContext({
     node,
     provides
   });
@@ -33,14 +33,14 @@ export function MultiCheckboxRenderer({
     itemValue: any,
     prevValue = []
   ) => {
-    if (!fieldName) return;
+    if (!fieldKey) return;
     const values = checked
       ? [...prevValue, itemValue]
       : prevValue?.filter((value: any) => value !== itemValue);
 
-    setValue(fieldName, values);
+    setValue(fieldKey, values);
     if (node.events?.onChange) {
-      execute('onChange', { ...provides, [fieldName]: values });
+      execute('onChange', { ...provides, [fieldKey]: values });
     }
   };
 
@@ -51,10 +51,10 @@ export function MultiCheckboxRenderer({
     return data;
   }, [data]);
 
-  if (!fieldName) {
+  if (!fieldKey) {
     return (
       <WrongConfig
-        message='❌ MultiCheckbox missing fieldName'
+        message='❌ MultiCheckbox missing fieldKey'
         type={node.type}
       />
     );
@@ -63,7 +63,7 @@ export function MultiCheckboxRenderer({
   return (
     <FormField
       control={control}
-      name={fieldName}
+      name={fieldKey}
       render={() => (
         <FormItem>
           <FormLabel>{params.label}</FormLabel>
@@ -71,7 +71,7 @@ export function MultiCheckboxRenderer({
             <FormField
               key={item.value}
               control={control}
-              name={fieldName}
+              name={fieldKey}
               render={({ field }) => {
                 return (
                   <FormItem

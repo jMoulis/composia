@@ -25,7 +25,7 @@ export function SelectFormRenderer({
   node,
   provides = {}
 }: IComponentRegistryProps) {
-  const { props, params, data, fieldName } = useComponentContext({
+  const { props, params, data, fieldKey } = useComponentContext({
     node,
     provides
   });
@@ -44,23 +44,23 @@ export function SelectFormRenderer({
     );
   }
   const handleValueChange = (value: string) => {
-    if (!fieldName) return;
-    form.setValue(fieldName, value);
+    if (!fieldKey) return;
+    form.setValue(fieldKey, value);
     if (node.events?.onChange) {
-      execute('onChange', { ...provides, [fieldName]: value });
+      execute('onChange', { ...provides, [fieldKey]: value });
     }
   };
 
-  if (!fieldName) {
+  if (!fieldKey) {
     return (
-      <WrongConfig message='❌ Select missing fieldName' type={node.type} />
+      <WrongConfig message='❌ Select missing fieldKey' type={node.type} />
     );
   }
 
   return (
     <FormField
       control={form.control}
-      name={fieldName}
+      name={fieldKey}
       render={({ field }) => (
         <FormItem>
           {label ? <FormLabel>{label}</FormLabel> : null}

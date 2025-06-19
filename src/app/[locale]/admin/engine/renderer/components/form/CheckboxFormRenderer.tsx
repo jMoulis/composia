@@ -24,27 +24,27 @@ export function CheckboxFormRenderer({
   bindings = {}
 }: IComponentRegistryProps) {
   const { control, setValue } = useFormContext();
-  const { fieldName, params, props } = useComponentContext({ node, provides });
+  const { fieldKey, params, props } = useComponentContext({ node, provides });
   const { execute } = useExecuteTrigger({ node });
 
   const handleValueChange = (value: CheckedState) => {
-    if (!fieldName) return;
-    setValue(fieldName, value);
+    if (!fieldKey) return;
+    setValue(fieldKey, value);
     if (node.events?.onChange) {
-      execute('onChange', { ...provides, [fieldName]: value });
+      execute('onChange', { ...provides, [fieldKey]: value });
     }
   };
 
-  if (!fieldName) {
+  if (!fieldKey) {
     return (
-      <WrongConfig message='❌ Checkbox missing fieldName' type={node.type} />
+      <WrongConfig message='❌ Checkbox missing fieldKey' type={node.type} />
     );
   }
 
   return (
     <FormField
       control={control}
-      name={fieldName}
+      name={fieldKey}
       render={({ field }) => {
         return (
           <FormItem

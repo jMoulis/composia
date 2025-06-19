@@ -19,24 +19,27 @@ export function TextareaRenderer({
   node,
   provides = {}
 }: IComponentRegistryProps) {
-  const { props, name, params } = useComponentContext({ node, provides });
+  const { props, fieldKey, params } = useComponentContext({ node, provides });
   const { control, setValue } = useFormContext();
   const { execute } = useExecuteTrigger({ node });
 
   const handleValueChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(name, event.target.value);
+    if (!fieldKey) return;
+    setValue(fieldKey, event.target.value);
     if (node.events?.onChange) {
-      execute('onChange', { ...provides, [name]: event.target.value });
+      execute('onChange', { ...provides, [fieldKey]: event.target.value });
     }
   };
 
-  if (!name)
-    return <WrongConfig message='❌ Textarea missing name' type={node.type} />;
+  if (!fieldKey)
+    return (
+      <WrongConfig message='❌ Textarea missing fieldKey' type={node.type} />
+    );
 
   return (
     <FormField
       control={control}
-      name={name}
+      name={fieldKey}
       render={({ field }) => (
         <FormItem>
           {params.label ? <FormLabel>{params.label}</FormLabel> : null}

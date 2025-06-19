@@ -10,6 +10,7 @@ type UseComponentContextOptions = {
 
 export function useComponentContext({ node, provides = {} }: UseComponentContextOptions) {
   const fieldName = useMemo(() => node.props?.name as string | undefined, [node.props?.name]);
+  const fieldKey = useMemo(() => node.data?.store?.fieldKey || node.data?.form?.fieldKey as string | undefined, [node.data?.form?.fieldKey, node.data?.store?.fieldKey]);
   const stores = useStoresContext((state) => state.stores);
   const storeKey = useMemo(() => node.data?.store?.key || '', [node.data?.store?.key]);
   const storeData = useMemo(() => stores[storeKey]?.data || null, [stores, storeKey]);
@@ -30,6 +31,7 @@ export function useComponentContext({ node, provides = {} }: UseComponentContext
     props: interpolateParams(mergedProps, provides, stores),
     fieldName,
     resourceDefinition,
+    fieldKey,
     data,
     name: node.props?.name,
     params: interpolateParams(node.params || {}, provides, stores), // paramètres passés au

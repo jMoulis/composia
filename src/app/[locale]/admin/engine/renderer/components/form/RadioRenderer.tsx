@@ -16,25 +16,23 @@ import WrongConfig from '../WrongConfig';
 
 export function RadioRenderer({ node, provides }: IComponentRegistryProps) {
   const form = useFormContext();
-  const { fieldName, params, data } = useComponentContext({ node, provides });
+  const { fieldKey, params, data } = useComponentContext({ node, provides });
   const { execute } = useExecuteTrigger({ node });
 
   const handleValueChange = (value: string) => {
-    if (!fieldName) return;
-    form.setValue(fieldName, value);
+    if (!fieldKey) return;
+    form.setValue(fieldKey, value);
     if (node.events?.onChange) {
-      execute('onChange', { ...provides, [fieldName]: value });
+      execute('onChange', { ...provides, [fieldKey]: value });
     }
   };
 
-  if (!fieldName)
-    return (
-      <WrongConfig message='❌ Radio missing fieldName' type={node.type} />
-    );
+  if (!fieldKey)
+    return <WrongConfig message='❌ Radio missing fieldKey' type={node.type} />;
   return (
     <FormField
       control={form.control}
-      name={fieldName}
+      name={fieldKey}
       render={({ field }) => (
         <FormItem className='space-y-3'>
           {params.label ? <FormLabel>{params.label}</FormLabel> : null}
